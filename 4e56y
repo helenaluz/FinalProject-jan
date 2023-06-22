@@ -1,0 +1,189 @@
+
+import java.util.Scanner;
+
+// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
+// then press Enter. You can now see whitespace characters in your code.
+public class Trabalho {
+    public static void main(String[] args) {
+        Scanner teclado = new Scanner(System.in);
+        
+        char[][] tabuleiro = new char[6][7];//coluna:7 linha:6
+        CriarTabuleiro(tabuleiro);
+        int bla = 0;
+        MostrarTablueito(tabuleiro);
+        char corPlayer = EscolhaCor(teclado);
+        char corRobo = CorRobo(corPlayer);
+        for(int i =0;i <20;i++) {
+        bla +=JogadaPlayer(teclado, tabuleiro,corPlayer);
+        System.out.println(bla);
+        MostrarTablueito(tabuleiro);
+        ValidadorDeVitoria(bla);
+        JogadaRobo(teclado, tabuleiro, corRobo);}
+        ValidadorDeVitoria(bla);
+        JogadaRobo(teclado, tabuleiro, corRobo);
+        System.out.println("");
+        MostrarTablueito(tabuleiro);
+
+    }
+
+    public static void CriarTabuleiro(char[][]matriz){
+
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                matriz[i][j] =  1;
+                
+            }
+        }
+
+    }
+
+    public static void MostrarTablueito(char[][] matriz){
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                System.out.print(matriz[i][j] + " ");
+            }
+            System.out.println( );
+        }
+    }
+
+    public static char EscolhaCor(Scanner teclado){
+        System.out.println("Qual cor você vai querer?\nA - Azul\nV - Vermelho");
+        char cor = teclado.next().toUpperCase().charAt(0);
+        if(cor == 'A'){
+            System.out.println("A cor escolhida é azul");
+        }
+        else{
+            System.out.println("A cor escolhida é vermelho");
+        }
+        return cor;
+    }
+
+    public static char CorRobo(char cor){
+
+        char corRobo = ' ';
+
+        if(cor == 'A') corRobo = 'V';
+        else corRobo = 'A';
+
+        return corRobo;
+    }
+    
+    
+    public static int JogadaPlayer(Scanner teclado,char[][] matriz, char cor ){
+    	boolean flag = false;
+    	int bla = 0;
+    	while(!flag) {
+        System.out.println("#-#-# SUA VEZ! -#-#-#");
+        System.out.println("Qual coluna você quer? (Escolha de 1 á 7)");
+        int coluna = teclado.nextInt();
+        int count = 0;
+        int linha = 0;
+        coluna--;
+        
+        for(int i = 5; i >= 0;i--){
+            if(matriz[i][coluna] == 'B'){
+                count++;}}
+        
+        for(int i = 5; i >= 0;i--){
+            if(matriz[i][coluna] == 'B'){
+                matriz[i][coluna] = cor;
+                linha = i;
+                break;
+            }
+         }
+        
+        
+        bla = ContadorDePontos(linha,coluna, matriz,cor);
+        flag = ValidandoJogada(count);
+        }
+    	
+    	
+        System.out.println();
+        return bla;
+    }
+
+    public static void JogadaRobo(Scanner teclado, char[][] matriz, char cor){
+    	boolean flag = false;
+    	while(!flag){
+	    	System.out.print("\n#-#-# VEZ DO ROBÔ -#-#-#");
+	        int count = 0;
+	        int min = 0;
+	        int max = 5;
+	        
+	        int coluna = (int) ((int) min + (Math.random() * (max - min)));
+	        for(int i = 5; i >= 0;i--){
+	            if(matriz[i][coluna] == 'B'){
+	                count++;}}
+	        for(int i = 5; i >= 0;i--){
+	            if(matriz[i][coluna] == 'B'){
+	                matriz[i][coluna] = cor;
+	                break;
+	            }
+	        }
+	        flag = ValidandoJogada(count);}
+        System.out.println();
+    }
+    
+    public static boolean ValidandoJogada(int count) {
+    	if(count == 0) {
+    		System.out.println("Você escolheu uma coluna que já está cheia, tente novamente escolhendo uma nova coluna");
+    		return false;
+    	}
+    	return true;
+    }
+    
+    public static int ContadorDePontos(int linha, int coluna, char[][] tabuleiro, char cor) {
+    	
+    	System.out.println(linha + "linha");
+    	System.out.println(coluna+" coluna");
+    	int countHorizontal = 0;
+    	int countEsquerdo = 0; // /
+    	int countDireito = 0; // \
+    	//char escolhido = tabuleiro[linha][coluna];
+    	int countVertical= 0;
+    	
+    	//VALIDAÇÃO 
+    	for(int i = 5; i >= 0 ;i--) {    		
+    		int x = linha;
+    		if(x == i) {
+    			if(tabuleiro[i][coluna] == cor) countVertical++;
+    			x--;}}
+    	
+    	for(int i = 6; i >= 0 ;i--) {    		
+    		int y = coluna;
+    		if(y == i) {
+    			if(tabuleiro[linha][i] == cor) countHorizontal++;
+    			y--;}
+    		}
+    	// / Diagonal Esquerda( Sobe )
+    	for(int i =0;i <6;i++) {
+    		int X = 0;
+    		int Y =0;
+    		
+    		if(linha > 0 && X>0) {X = linha-i;System.out.println(X+ "X");}
+    		if(coluna >0 && Y < 6) {Y =coluna+i;System.out.println(Y+"Y");}
+    		
+    		if(cor == tabuleiro[X][Y] ) countEsquerdo++;}
+    	
+    	// \ Diagonal Direita (Desce)
+    	for(int i =0;i<6;i++) {
+    		int X = 0;
+    		int Y =0;
+    		if(linha > 0) {X = linha-i;}
+    		if(coluna >0) {Y =coluna-i;}
+    		if(cor == tabuleiro[X][Y] ) countDireito++;}
+    	
+    	
+    	if(countHorizontal == 1) return countHorizontal;
+    	if(countEsquerdo > 0) return countEsquerdo;
+    	if (countDireito> 0) return countDireito;
+    	return countVertical;
+    	}
+    
+    
+    public static void ValidadorDeVitoria(int count) {
+    	if(count == 4) System.out.println("VENCEU!");
+    }
+
+
+}
