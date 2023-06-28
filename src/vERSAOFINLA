@@ -1,0 +1,230 @@
+
+import java.util.Scanner;
+
+// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
+// then press Enter. You can now see whitespace characters in your code.
+class Trabalho {
+    public static void main(String[] args) {
+
+        Scanner teclado = new Scanner(System.in);
+        Construtor(teclado);
+        teclado.close();
+
+    }
+
+    public static void Construtor(Scanner teclado){
+        System.out.println("!BEM VINDO AO JOGO LIGA 4!");
+        char[][] tabuleiro = new char[6][7];
+        tabuleiro = CriarTabuleiro(tabuleiro);
+        MostrarTabuleiro(tabuleiro);
+        char corPlayer = EscolhaCor(teclado);
+        char corRobo = CorRobo(corPlayer);
+
+        boolean FimDeJogo = false;
+        boolean EJogadaPlayer = true;
+
+        while(!FimDeJogo){
+            if(EJogadaPlayer){
+                System.out.println("--- SUA VEZ ---");
+                JogadaPlayer(teclado,tabuleiro,corPlayer);
+                MostrarTabuleiro(tabuleiro);
+                System.out.println();
+                if(ValidadorVitoria(tabuleiro,corPlayer)){
+                    System.out.println("Você venceu!");
+                    FimDeJogo = JogarDeNovo(teclado,tabuleiro);
+
+                }
+            EJogadaPlayer = false;
+            }
+            else{
+                System.out.println("--- VEZ DO ROBÔ ---");
+                JogadaRobo(tabuleiro, corRobo);
+                MostrarTabuleiro(tabuleiro);
+                System.out.println();
+                if(ValidadorVitoria(tabuleiro,corRobo)){
+                    System.out.println("Você perdeu.. O robô venceu");
+                    FimDeJogo = JogarDeNovo(teclado,tabuleiro);
+                }
+                EJogadaPlayer = true;
+            }
+            if(DeuEmpate(tabuleiro) == true){
+                System.out.println("DEU EMPATE");
+                FimDeJogo = JogarDeNovo(teclado,tabuleiro);
+            }
+        }
+    }
+    public static char[][] CriarTabuleiro(char[][]matriz){
+
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                matriz[i][j] =  'B';}
+        }
+
+        return matriz;
+    }
+
+    public static boolean JogarDeNovo(Scanner teclado, char[][] tabuleiro){
+        boolean FimDeJogo = false;
+        System.out.println("Você deseja jogar novamente? ( 1 - Sim | 2 - Não)");
+        int val = teclado.nextInt();
+        switch(val){
+            case 1: tabuleiro = CriarTabuleiro(tabuleiro);   break;
+            case 2:
+                System.out.println("Ok..."); FimDeJogo = true; break;
+            case 3:
+                System.out.println("Opção ERRADA!");
+                System.out.println("Você deseja jogar novamente? ( 1 - Sim | 2 - Não)");
+                val = teclado.nextInt();break;
+            default: FimDeJogo = false;
+
+        }
+        return FimDeJogo;
+    }
+    public static void MostrarTabuleiro(char[][] matriz){
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                System.out.print(matriz[i][j] + " ");
+            }
+            System.out.println( );
+        }
+    }
+    public static boolean DeuEmpate(char[][] tabuleiro) {
+        for (int i = 0; i < tabuleiro.length; i++) {
+            for (int j = 0; j < tabuleiro[i].length; j++) {
+                if (tabuleiro[i][j] == 'B') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    public static char EscolhaCor(Scanner teclado){
+        System.out.println("Qual cor você vai querer?\nA - Azul\nV - Vermelho");
+        char cor = teclado.next().toUpperCase().charAt(0);
+        if(cor == 'A'){
+            System.out.println("A cor escolhida é azul");
+        }
+        else{
+            System.out.println("A cor escolhida é vermelho");
+        }
+        return cor;
+    }
+
+    public static char CorRobo(char cor){
+
+        char corRobo = ' ';
+
+        if(cor == 'A') corRobo = 'V';
+        else corRobo = 'A';
+
+        return corRobo;
+    }
+
+
+    //jogada player
+    public static void JogadaPlayer(Scanner teclado, char[][] tabuleiro, char cor) {
+        int coluna = 0;
+        do {
+            System.out.println("Qual coluna você deseja jogar? (1-7)");
+            coluna = teclado.nextInt() - 1;
+        } while (!validandoJogada(tabuleiro, coluna));
+
+        int linha = LinhaVazia(tabuleiro, coluna);
+        tabuleiro[linha][coluna] = cor;
+    }
+
+    public static void JogadaRobo(char[][] tabuleiro, char cor) {
+        int coluna;
+        do {
+            coluna = (int) (Math.random() * 7);
+        } while (!validandoJogada(tabuleiro, coluna));
+
+        int linha = LinhaVazia(tabuleiro, coluna);
+        tabuleiro[linha][coluna] = cor;
+    }
+
+    public static boolean validandoJogada(char[][] tabuleiro, int coluna) {
+        if(coluna >= 0 && coluna < tabuleiro[0].length && tabuleiro[0][coluna] == 'B'){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static int LinhaVazia(char[][] tabuleiro, int coluna) {
+        for (int i = tabuleiro.length - 1; i >= 0; i--) {
+            if (tabuleiro[i][coluna] == 'B') {
+                return i;
+            }
+        }
+        return -5464652;
+    }
+
+    //Valida a jogada, ve se a coluna ja esta cheia
+    public static boolean ValidandoJogada(int count) {
+        if(count == 0) {
+            System.out.println("Você escolheu uma coluna que já está cheia, tente novamente escolhendo uma nova coluna");
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean ValidadorVitoria (char[][] tabuleiro, char cor) {
+
+
+        // VALIDAÇÃO - Vertical (em pé)
+        for (int i = 0; i <= 2; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (tabuleiro[i][j] == cor &&
+                        tabuleiro[i + 1][j] == cor &&
+                        tabuleiro[i + 2][j] == cor &&
+                        tabuleiro[i + 3][j] == cor) {
+                    return true;
+                }
+            }
+        }
+
+
+        //VALIDAÇÃO - Horizontal (deitado) - funciona
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j <= 2; j++) {
+                if (tabuleiro[i][j] == cor &&
+                        tabuleiro[i][j + 1] == cor &&
+                        tabuleiro[i][j + 2] == cor &&
+                        tabuleiro[i][j + 3] == cor) {
+                    return true;
+                }
+            }
+        }
+
+        // Validação - Diagonal Esquerda (Sobe)
+        for (int i = 2; i < 6; i++) {
+            for (int j = 0; j <= 3; j++) {
+                if (tabuleiro[i][j] == cor &&
+                        tabuleiro[i - 1][j + 1] == cor &&
+                        tabuleiro[i - 2][j + 2] == cor &&
+                        tabuleiro[i - 3][j + 3] == cor) {
+                    return true;
+                }
+            }
+        }
+
+        // Validação - Diagonal Direita (Desce)
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j <= 3; j++) {
+                if (tabuleiro[i][j] == cor &&
+                        tabuleiro[i + 1][j + 1] == cor &&
+                        tabuleiro[i + 2][j + 2] == cor &&
+                        tabuleiro[i + 3][j + 3] == cor) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+
+    }
+}
